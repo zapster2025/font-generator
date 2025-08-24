@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultimate Font Generator</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: rgba(0,0,0,0.6);
+      padding: 20px;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      color: #2bb673;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background: #222;
+      border-bottom: 2px solid #2bb673;
+    }
+    .tab {
+      flex: 1;
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      background: #222;
+      border: none;
+      outline: none;
+      color: #ddd;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+    .tab.active {
+      background: #2bb673;
+      color: #fff;
+      font-weight: bold;
+    }
+    .content {
+      display: none;
+      padding: 20px;
+      flex: 1;
+    }
+    .content.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    input[type="text"] {
+      width: 100%;
+      max-width: 500px;
+      padding: 12px;
+      font-size: 1rem;
+      margin: 15px auto;
+      display: block;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #111;
+      color: #fff;
+      text-align: center;
+      transition: 0.3s;
+    }
+    input[type="text"]:focus {
+      border-color: #2bb673;
+      outline: none;
+      box-shadow: 0 0 8px #2bb673;
+    }
+    button {
+      padding: 10px 16px;
+      margin: 10px 6px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #2bb673;
+      color: #fff;
+      font-weight: bold;
+      transition: transform 0.2s, background 0.3s;
+    }
+    button:hover {
+      background: #239a5a;
+      transform: scale(1.05);
+    }
+    .output-box {
+      margin-top: 15px;
+      padding: 15px;
+      background: #111;
+      border-radius: 6px;
+      font-size: 1.4rem;
+      word-wrap: break-word;
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    }
+    .gallery {
+      max-height: 65vh;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+    .gallery-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      background: #1a1a1a;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .gallery-item:hover {
+      background: #2a2a2a;
+    }
+    .gallery-text {
+      flex: 1;
+      font-size: 1.2rem;
+      padding-right: 10px;
+    }
+    footer {
+      text-align: center;
+      padding: 12px;
+      background: rgba(0,0,0,0.8);
+      font-size: 0.9rem;
+      color: #aaa;
+      border-top: 1px solid #333;
+    }
+    footer span {
+      color: #2bb673;
+      font-weight: bold;
+    }
+    @media(max-width: 600px) {
+      .gallery-text { font-size: 1rem; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>✨ Ultimate Font Generator ✨</header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="openTab('generator')">Generator</button>
+    <button class="tab" onclick="openTab('gallery')">Gallery</button>
+  </div>
+
+  <!-- Generator Tab -->
+  <div id="generator" class="content active">
+    <input type="text" id="userInput" placeholder="Type your text here..." oninput="updateGallery()">
+    <div class="output-box" id="outputBox">Your styled text will appear here...</div>
+    <div style="text-align:center;">
+      <button onclick="randomStyle()">🎲 Random Style</button>
+      <button onclick="copyText()">📋 Copy Current</button>
+    </div>
+  </div>
+
+  <!-- Gallery Tab -->
+  <div id="gallery" class="content">
+    <h3>All Styles</h3>
+    <div class="gallery" id="galleryList"></div>
+  </div>
+
+  <footer>Developed by <span>TechKen</span> 🚀</footer>
+
+<script>
+  const fonts = [
+    {name:"Bold",map:{"a":"𝗮","b":"𝗯","c":"𝗰","d":"𝗱","e":"𝗲","f":"𝗳","g":"𝗴","h":"𝗵","i":"𝗶","j":"𝗷","k":"𝗸","l":"𝗹","m":"𝗺","n":"𝗻","o":"𝗼","p":"𝗽","q":"𝗾","r":"𝗿","s":"𝘀","t":"𝘁","u":"𝘂","v":"𝘃","w":"𝘄","x":"𝘅","y":"𝘆","z":"𝘇"}},
+    {name:"Italic",map:{"a":"𝑎","b":"𝑏","c":"𝑐","d":"𝑑","e":"𝑒","f":"𝑓","g":"𝑔","h":"ℎ","i":"𝑖","j":"𝑗","k":"𝑘","l":"𝑙","m":"𝑚","n":"𝑛","o":"𝑜","p":"𝑝","q":"𝑞","r":"𝑟","s":"𝑠","t":"𝑡","u":"𝑢","v":"𝑣","w":"𝑤","x":"𝑥","y":"𝑦","z":"𝑧"}},
+    {name:"Cursive",map:{"a":"𝓪","b":"𝓫","c":"𝓬","d":"𝓭","e":"𝓮","f":"𝓯","g":"𝓰","h":"𝓱","i":"𝓲","j":"𝓳","k":"𝓴","l":"𝓵","m":"𝓶","n":"𝓷","o":"𝓸","p":"𝓹","q":"𝓺","r":"𝓻","s":"𝓼","t":"𝓽","u":"𝓾","v":"𝓿","w":"𝔀","x":"𝔁","y":"𝔂","z":"𝔃"}},
+    {name:"Blackletter",map:{"a":"𝔞","b":"𝔟","c":"𝔠","d":"𝔡","e":"𝔢","f":"𝔣","g":"𝔤","h":"𝔥","i":"𝔦","j":"𝔧","k":"𝔨","l":"𝔩","m":"𝔪","n":"𝔫","o":"𝔬","p":"𝔭","q":"𝔮","r":"𝔯","s":"𝔰","t":"𝔱","u":"𝔲","v":"𝔳","w":"𝔴","x":"𝔵","y":"𝔶","z":"𝔷"}},
+    {name:"Double Struck",map:{"a":"𝕒","b":"𝕓","c":"𝕔","d":"𝕕","e":"𝕖","f":"𝕗","g":"𝕘","h":"𝕙","i":"𝕚","j":"𝕛","k":"𝕜","l":"𝕝","m":"𝕞","n":"𝕟","o":"𝕠","p":"𝕡","q":"𝕢","r":"𝕣","s":"𝕤","t":"𝕥","u":"𝕦","v":"𝕧","w":"𝕨","x":"𝕩","y":"𝕪","z":"𝕫"}},
+    {name:"Bubbles",map:{"a":"ⓐ","b":"ⓑ","c":"ⓒ","d":"ⓓ","e":"ⓔ","f":"ⓕ","g":"ⓖ","h":"ⓗ","i":"ⓘ","j":"ⓙ","k":"ⓚ","l":"ⓛ","m":"ⓜ","n":"ⓝ","o":"ⓞ","p":"ⓟ","q":"ⓠ","r":"ⓡ","s":"ⓢ","t":"ⓣ","u":"ⓤ","v":"ⓥ","w":"ⓦ","x":"ⓧ","y":"ⓨ","z":"ⓩ"}},
+    {name:"Squares",map:{"a":"🄰","b":"🄱","c":"🄲","d":"🄳","e":"🄴","f":"🄵","g":"🄶","h":"🄷","i":"🄸","j":"🄹","k":"🄺","l":"🄻","m":"🄼","n":"🄽","o":"🄾","p":"🄿","q":"🅀","r":"🅁","s":"🅂","t":"🅃","u":"🅄","v":"🅅","w":"🅆","x":"🅇","y":"🅈","z":"🅉"}},
+    {name:"Vaporwave",map:{"a":"ａ","b":"ｂ","c":"ｃ","d":"ｄ","e":"ｅ","f":"ｆ","g":"ｇ","h":"ｈ","i":"ｉ","j":"ｊ","k":"ｋ","l":"ｌ","m":"ｍ","n":"ｎ","o":"ｏ","p":"ｐ","q":"ｑ","r":"ｒ","s":"ｓ","t":"ｔ","u":"ｕ","v":"ｖ","w":"ｗ","x":"ｘ","y":"ｙ","z":"ｚ"}},
+    {name:"Upside Down",transform: t => t.split("").reverse().map(c => upsideMap[c]||c).join("")},
+    {name:"Tiny",map:{"a":"ᵃ","b":"ᵇ","c":"ᶜ","d":"ᵈ","e":"ᵉ","f":"ᶠ","g":"ᵍ","h":"ʰ","i":"ⁱ","j":"ʲ","k":"ᵏ","l":"ˡ","m":"ᵐ","n":"ⁿ","o":"ᵒ","p":"ᵖ","q":"9","r":"ʳ","s":"ˢ","t":"ᵗ","u":"ᵘ","v":"ᵛ","w":"ʷ","x":"ˣ","y":"ʸ","z":"ᶻ"}},
+    {name:"Runic",map:{"a":"ᚨ","b":"ᛒ","c":"ᚲ","d":"ᛞ","e":"ᛖ","f":"ᚠ","g":"ᚷ","h":"ᚺ","i":"ᛁ","j":"ᛃ","k":"ᚴ","l":"ᛚ","m":"ᛗ","n":"ᚾ","o":"ᛟ","p":"ᛈ","q":"ᛩ","r":"ᚱ","s":"ᛋ","t":"ᛏ","u":"ᚢ","v":"ᚡ","w":"ᚹ","x":"ᛪ","y":"ᛦ","z":"ᛉ"}}
+  ];
+
+  const upsideMap = {"a":"ɐ","b":"q","c":"ɔ","d":"p","e":"ǝ","f":"ɟ","g":"ƃ","h":"ɥ","i":"ᴉ","j":"ɾ","k":"ʞ","l":"ʃ","m":"ɯ","n":"u","o":"o","p":"d","q":"b","r":"ɹ","s":"s","t":"ʇ","u":"n","v":"ʌ","w":"ʍ","x":"x","y":"ʎ","z":"z"};
+
+  let currentStyle = null;
+
+  function stylize(text, style) {
+    if(style.map) {
+      return text.split("").map(ch => {
+        const lower = ch.toLowerCase();
+        return style.map[lower] || ch;
+      }).join("");
+    } else if(style.transform) {
+      return style.transform(text.toLowerCase());
+    }
+    return text;
+  }
+
+  function randomStyle() {
+    const input = document.getElementById("userInput").value;
+    if(!input) return;
+    currentStyle = fonts[Math.floor(Math.random()*fonts.length)];
+    document.getElementById("outputBox").innerText = stylize(input, currentStyle);
+  }
+
+  function copyText() {
+    const output = document.getElementById("outputBox").innerText;
+    if(output) {
+      navigator.clipboard.writeText(output);
+      alert("Copied: " + output);
+    }
+  }
+
+  function updateGallery() {
+    const input = document.getElementById("userInput").value;
+    const gallery = document.getElementById("galleryList");
+    gallery.innerHTML = "";
+    fonts.forEach(style => {
+      const styled = stylize(input || "Preview", style);
+      const item = document.createElement("div");
+      item.className = "gallery-item";
+      item.innerHTML = `<div class="gallery-text">${styled}</div>
+                        <button onclick="navigator.clipboard.writeText('${styled}')">Copy</button>`;
+      gallery.appendChild(item);
+    });
+  }
+
+  function openTab(tab) {
+    document.querySelectorAll(".content").forEach(c=>c.classList.remove("active"));
+    document.getElementById(tab).classList.add("active");
+    document.querySelectorAll(".tab").forEach(c=>c.classList.remove("active"));
+    event.target.classList.add("active");
+  }
+
+  updateGallery();
+</script>
+</body>
+</html>
